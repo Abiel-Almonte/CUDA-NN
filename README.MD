@@ -175,7 +175,7 @@ a^1_2\\
 a^1_3
 \end{bmatrix}
 + \begin{bmatrix}
-b^2_1\\
+b^2_1
 \end{bmatrix}_{(p\times 1)}
 ```
 ```math
@@ -231,14 +231,14 @@ Second Layer: The gradients are calculated and used in optimization:
 ```math
 \Longrightarrow \delta^2= \frac{\partial a^2}{\partial z^2} \cdot \frac{1}{m}\sum_{i=1}^{m}\left(y_i-a^L_i\right) = \begin{bmatrix}\frac{\partial a^2_1}{\partial z^2_1}\end{bmatrix}_{(p\times p)}
 \begin{bmatrix}
-\frac{1}{m}(e_1 + \ldots + e_m)\\
+\frac{1}{m}(e_1 + \ldots + e_m)
 \end{bmatrix}_{(p\times 1)}= \begin{bmatrix}
-\delta^2_1\\
+\delta^2_1
 \end{bmatrix}_{(p\times 1)}
 ```
 ```math
 \Longrightarrow \frac{\partial \mathcal{L}}{\partial b^2}=\begin{bmatrix}
-\delta^2_1\\
+\delta^2_1
 \end{bmatrix}
 ```
 ```math
@@ -248,12 +248,12 @@ b^2_1
 \eta
 \end{bmatrix}
 \begin{bmatrix}
-\delta^{2}_1\\
+\delta^{2}_1
 \end{bmatrix}
 ```
 ```math
 \Longrightarrow \frac{\partial \mathcal{L}}{\partial W^2} =\begin{bmatrix}
-\delta^2_1\\
+\delta^2_1
 \end{bmatrix}_{(p\times 1)}
 \begin{bmatrix}
 a^1_1 & a^1_2 & a^1_3
@@ -268,7 +268,7 @@ w_{1,1}^2 & w_{1,2}^2 & w_{1,3}^2
 \begin{bmatrix}
 \eta
 \end{bmatrix}
-\begin{bmatrix} dw_{1,1}^2 & dw_{1,2}^2 & dw_{1,3}^2 \end{bmatrix
+\begin{bmatrix} dw_{1,1}^2 & dw_{1,2}^2 & dw_{1,3}^2 \end{bmatrix}
 ```
 First layer: The gradients are calculated and used in optimization:
 ```math
@@ -292,7 +292,7 @@ w_{1,2}^2 \\
 w_{1,3}^2
 \end{bmatrix}_{(j\times p)}
 \begin{bmatrix}
-\delta^2_1\\
+\delta^2_1
 \end{bmatrix}_{(p\times 1)}= \begin{bmatrix}
 \delta^{1}_1\\
 \delta^{1}_2\\
