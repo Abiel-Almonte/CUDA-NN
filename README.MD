@@ -6,8 +6,9 @@ CUDA, characterized by its high throughput and high latency, is an effective pro
 
 The following is an example of the kernel preforming tiled matrix multiplication in the linear layer (```src/layers/linear_layer.cu```).
 ```cpp
-__global__ void linearLayerComputeOutput(const float* __restrict__ W, const float* __restrict__ A, float* __restrict__ Z, 
-                                          const float* __restrict__ b, int W_x, int W_y, int A_x, int A_y){
+__global__ void linearLayerComputeOutput(const float* __restrict__ W, const float* __restrict__ A,
+										float* __restrict__ Z, const float* __restrict__ b, int W_x,
+										int W_y, int A_x, int A_y){
 
 	__shared__ float tileW[16][16];
 	__shared__ float tileA[16][16];
@@ -59,7 +60,7 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 
 - ```__shared__```: Declares memory that is shared among threads in the same block on the GPU.
 - ```__syncthreads```:  Acts as a barrier synchronization, causing threads in a block to wait until all have reached this point.
-- ```__restricted__```: Informs the compiler that a pointer does not alias other pointers, potentially improving performance. 
+- ```__restrict__```: Informs the compiler that a pointer does not alias other pointers, potentially improving performance. 
 - ```#param unroll```: Directs the compiler to unroll loops, potentially improving performance by converting loops into separate instructions.
 
 >**__NOTE__** There is still a lot of room for improvement in all kernels and under construction. For more information on the above kernel refer to the CUDA programming guide [here](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#shared-memory-in-matrix-multiplication-c-ab__improvement-reading-additional-data-shared-memory).
@@ -79,7 +80,7 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 - $\hat{y} \in \mathbb{R}$
 ### Loss function:
 - Binary Cross-Entropy (BCE):
-  - $\mathcal{L}= \frac{1}{m}\sum_{i=1}^m \left(y_i \log(\hat{y}_i) + (1-y_i) + \log(1-\hat{y}_i)\right)$
+  - $\mathcal{L}= \frac{1}{m}{\sum}_{i=1}^m \left(y_i \log(\hat{y}_i) + (1-y_i) + \log(1-\hat{y}_i)\right)$
 > **__NOTE__** $a^0= x, a^L= \hat{y}$
 ## Forward Propagation
 ### Recursive General Form
@@ -87,10 +88,10 @@ $\text{For } l=1,\ldots,L$
 $$a^l= \max\left(0,z^l:= W^{l}a^{l-1} + b^l \right)$$
 
 ### Example
-For simplcity, consider the following neural network:
+For simplicity, consider the following neural network:
 
 <p align="center">
-  <img src="./media/SimpleMLP.png" />
+  <img src="./media/exampleArch.png" />
 </p>
 
 The input, hidden, and output layers will have their size represented as $k,j,p$ respectively to ensure that the order matrix multiplication here is invariant to the architecture's width.
@@ -129,7 +130,7 @@ w_{3,1}^1 & w_{3,2}^1
 \end{bmatrix}
 \begin{bmatrix}
 x_1\\
-x_2\\
+x_2
 \end{bmatrix}
 + \begin{bmatrix}
 b^1_1\\
@@ -206,15 +207,15 @@ $\text{Where: } \eta := \text{diag}(\eta, \ldots, \eta)$
 ### Example
 Recall this neural network:
 <p align="center">
-  <img src="./media/SimpleMLP.png" />
+  <img src="./media/exampleArch.png" />
 </p>
 
-For demonstration purposes, assume MSE loss. The loss function will reconstructed so its gradient can be broken into intermediate terms: 
+For demonstration purposes, assume MSE loss. The loss function is reconstructed so its gradient can be broken into intermediate terms: 
 ```math
-\mathcal{L}= \frac{1}{2m}\sum_{i=1}^{m}\left(y_i-a^L_i\right)^2
+\mathcal{L}= \frac{1}{2m}\sum_{i=1}^{m}\left(y_i-a^L_i\right)^2,  \text{ let } v=y_i-a^L_i
 ```
 ```math
-\mathcal{L}=  \frac{1}{2m}\sum_{i=1}^{m}\left(v\right)^2, \text{ where } v=y_i-a^L_i
+\mathcal{L}=  \frac{1}{2m}\sum_{i=1}^{m}\left(v\right)^2
 ```
 
 The first error term ($\delta^{L=2}$) is initialized:
