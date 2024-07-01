@@ -59,31 +59,31 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 - ```__shared__```: Declares memory that is shared among threads in the same block on the GPU.
 - ```__syncthreads```:  Acts as a barrier synchronization, causing threads in a block to wait until all have reached this point.
 - ```__restricted__```: Informs the compiler that a pointer does not alias other pointers, potentially improving performance. 
-- ```#param unroll```: Directs the compiler to unroll loops, potentially improving performance by converting loops into separate instructions.\
+- ```#param unroll```: Directs the compiler to unroll loops, potentially improving performance by converting loops into separate instructions.
 
 >**__NOTE__** There is still a lot of room for improvement in all kernels and under construction. For more information on the above kernel refer to the CUDA programming guide [here](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#shared-memory-in-matrix-multiplication-c-ab__improvement-reading-additional-data-shared-memory).
 
 ## Architecture
 ### Input-layer: 
-- $\;\; x \in \mathbb{R}^2$
+- $x \in \mathbb{R}^2$
 ### $L$ Hidden-layers:
 - Linear Neurons:
     - $z^l =  W^{l}a^{l-1} + b^l$\
-    where, $\;\; W^l\in \mathbb{R}^{j \times k}$, $\;\; a^{l-1}\in \mathbb{R}^k$, $\;\; b^l, z^l\in \mathbb{R}^j$
+    where, $ W^l\in \mathbb{R}^{j \times k}$, $ a^{l-1}\in \mathbb{R}^k$, $ b^l, z^l\in \mathbb{R}^j$
 - Rectified Linear-Unit (ReLU) Activation Function:
     - $a^l= \max{\left(0, z^l\right)}$
 - Sigmoid Activation Function:
     - $a^l=  (1 + e^{-z^l})^{-1} = \sigma(z^l)$
 ### Output-layer:
-- $\;\; \hat{y} \in \mathbb{R}$
+- $\hat{y} \in \mathbb{R}$
 ### Loss function:
 - Binary Cross-Entropy (BCE):
   - $\mathcal{L}= \frac{1}{m}\sum_{i=1}^{m}\left(y_i \log(\hat{y}_i) + (1-y_i) + \log(1-\hat{y}_i)\right)$
-> **__NOTE__**: $a^0= x, \;\; a^L= \hat{y}$
+> **__NOTE__** $a^0= x, a^L= \hat{y}$
 ## Forward Propagation
 ### Recursive General Form
 $\text{For } l=1,\ldots,L$
-$$ a^l= \max\left(0,z^l:= W^{l}a^{l-1} + b^l \right)$$
+$$a^l= \max\left(0,z^l:= W^{l}a^{l-1} + b^l \right)$$
 
 ### Example
 For simplcity, consider the following neural network:
@@ -95,10 +95,7 @@ For simplcity, consider the following neural network:
 The input, hidden, and output layers will have their size represented as $k,j,p$ respectively to ensure that the order matrix multiplication here is invariant to the architecture's width.
 
 The input layer is composed of the two blue nodes
-$$x= \begin{bmatrix}
-x_1\\
-x_2\\
-\end{bmatrix}_{(k\times 1)}$$
+$$x= \begin{bmatrix}x_1\\ x_2\\ \end{bmatrix}_{(k\times 1)}$$
 The weights and baisis have the following noation:
 -   $w^l_{j,k}$ where, $l$ represents the layer, $k$ reprsents the posterior neuron connection, $j$ represents the anterior neuron connection.  Each line corresponds to a single weight.
 -   $b^l_j$ where $l$ is also the layer and $j$ is the neuron in the anterior layer.
