@@ -178,7 +178,8 @@ a^1_3
 b^2_1\\
 \end{bmatrix}_{(p\times 1)}
 ```
-```math a^2= \begin{bmatrix}
+```math
+a^2= \begin{bmatrix}
 \sigma\left(0, w^2_{1,1}a^1_1+ w^2_{1,2}a^1_2+ w^2_{1,3}a^1_3 + b^2_1\right)
 \end{bmatrix}= \begin{bmatrix}\sigma(0, z^2_1)\end{bmatrix}=\begin{bmatrix}a^2_1\end{bmatrix}_{(p\times 1)}
 ```
@@ -227,7 +228,8 @@ Second Layer: The gradients are calculated and used in optimization:
 ```math
 \frac{\partial \mathcal{L}}{\partial W^2}= \frac{\partial \mathcal{L}}{\partial z^2}\frac{\partial z^2}{\partial W^2}=  \delta^2(a^{2-1})^\top
 ```
-```math\Longrightarrow \delta^2= \frac{\partial a^2}{\partial z^2} \cdot \frac{1}{m}\sum_{i=1}^{m}\left(y_i-a^L_i\right) = \begin{bmatrix}\frac{\partial a^2_1}{\partial z^2_1}\end{bmatrix}_{(p\times p)}
+```math
+\Longrightarrow \delta^2= \frac{\partial a^2}{\partial z^2} \cdot \frac{1}{m}\sum_{i=1}^{m}\left(y_i-a^L_i\right) = \begin{bmatrix}\frac{\partial a^2_1}{\partial z^2_1}\end{bmatrix}_{(p\times p)}
 \begin{bmatrix}
 \frac{1}{m}(e_1 + \ldots + e_m)\\
 \end{bmatrix}_{(p\times 1)}= \begin{bmatrix}
