@@ -96,12 +96,10 @@ For simplcity, consider the following neural network:
 The input, hidden, and output layers will have their size represented as $k,j,p$ respectively to ensure that the order matrix multiplication here is invariant to the architecture's width.
 
 The input layer is composed of the two blue nodes
-```math
-x = \begin{bmatrix}
-x_1\\
-x_2
-\end{bmatrix}_{(k \times 1)}
-```
+$$x = \begin{bmatrix}
+x_1\\\
+x_2\\\
+\end{bmatrix}_{(k \times 1)}$$
 
 The weights and baisis have the following noation:
 -   $w^l_{j,k}$ where, $l$ represents the layer, $k$ reprsents the posterior neuron connection, $j$ represents the anterior neuron connection.  Each line corresponds to a single weight.
