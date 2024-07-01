@@ -97,8 +97,8 @@ The input, hidden, and output layers will have their size represented as $k,j,p$
 
 The input layer is composed of the two blue nodes
 $$x = \begin{bmatrix}
-x_1\\
-x_2\\
+x_1\\\
+x_2\\\
 \end{bmatrix}_{(k \times 1)}$$
 
 The weights and baisis have the following noation:
