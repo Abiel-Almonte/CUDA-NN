@@ -79,7 +79,7 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 - $\hat{y} \in \mathbb{R}$
 ### Loss function:
 - Binary Cross-Entropy (BCE):
-  - $\mathcal{L}= \frac{1}{m}\sum^m_{i=1}\left(y_i \log(\hat{y}_i) + (1-y_i) + \log(1-\hat{y}_i)\right)$
+  - $\mathcal{L}= \frac{1}{m}\sum_{i=1}^m \left(y_i \log(\hat{y}_i) + (1-y_i) + \log(1-\hat{y}_i)\right)$
 > **__NOTE__** $a^0= x, a^L= \hat{y}$
 ## Forward Propagation
 ### Recursive General Form
@@ -99,7 +99,7 @@ The input layer is composed of the two blue nodes
 ```math 
 x = \begin{bmatrix}
 x_1\\
-x_2\\
+x_2
 \end{bmatrix}_{(k \times 1)}
 ```
 
