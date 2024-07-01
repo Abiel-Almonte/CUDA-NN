@@ -162,9 +162,11 @@ The output of the first layer has the following Jacobain:
 \frac{\partial a^1_1}{\partial z^1_1} && 0 &&0 \\
 0 && \frac{\partial a^1_2}{\partial z^1_2} && 0\\
 0 && 0  && \frac{\partial a^1_3}{\partial z^1_3}
-\end{bmatrix}_{(j\times j)}$$
+\end{bmatrix}_{(j\times j)}
+```
 The output of previous layer is passed as an input to the next layer:
-$$z^2= W^2a^1 + b^2=\begin{bmatrix}
+```math
+z^2= W^2a^1 + b^2=\begin{bmatrix}
 w_{1,1}^2 & w_{1,2}^2 & w_{1,3}^2
 \end{bmatrix}_{(p\times j)}
 \begin{bmatrix}
@@ -192,8 +194,12 @@ $\text{For } l=L,\ldots,1$
 $$\delta^{l-1}= \frac{\partial a^{l-1}}{\partial z^{l-1}}(W^l)^{\top}\delta^{l}$$
 $\text{Where: } \delta^L= \frac{\partial a^L}{\partial z^L}\frac{\partial \mathcal{L}}{\partial a^L}$
 #### Basic Gradient Descent Optimization:
-$$b^l_{new}= b^l_{old}- \eta\frac{\partial \mathcal{L}}{\partial b^l} \text{, \;\;} \frac{\partial \mathcal{L}}{\partial b^l}=  \delta^l$$
-$$W^l_{new}= W^l_{old}- \eta\frac{\partial \mathcal{L}}{\partial W^l} \text{, \;\;} \frac{\partial \mathcal{L}}{\partial W^l}=  \delta^l(a^{l-1})^\top$$
+```math
+b^l_{new}= b^l_{old}- \eta\frac{\partial \mathcal{L}}{\partial b^l} \text{, \;\;} \frac{\partial \mathcal{L}}{\partial b^l}=  \delta^l
+```
+```math
+W^l_{new}= W^l_{old}- \eta\frac{\partial \mathcal{L}}{\partial W^l} \text{, \;\;} \frac{\partial \mathcal{L}}{\partial W^l}=  \delta^l(a^{l-1})^\top
+```
 $\text{Where: } \eta := \text{diag}(\eta, \ldots, \eta)$
 
 ### Example
@@ -203,38 +209,56 @@ Recall this neural network:
 </p>
 
 For demonstration purposes, assume MSE loss. The loss function will reconstructed so its gradient can be broken into intermediate terms: 
-$$\mathcal{L}= \frac{1}{2m}\sum_{i=1}^{m}\left(y_i-a^L_i\right)^2$$
-$$\mathcal{L}=  \frac{1}{2m}\sum_{i=1}^{m}\left(v\right)^2, \text{ where } v=y_i-a^L_i$$
+```math
+\mathcal{L}= \frac{1}{2m}\sum_{i=1}^{m}\left(y_i-a^L_i\right)^2
+```
+```math
+\mathcal{L}=  \frac{1}{2m}\sum_{i=1}^{m}\left(v\right)^2, \text{ where } v=y_i-a^L_i
+```
 
 The first error term ($\delta^{L=2}$) is initialized:
-$$\delta^2= \frac{\partial a^2}{\partial z^2} \frac{\partial v}{\partial a^2} \frac{\partial \mathcal{L}}{\partial v}= \frac{\partial \mathcal{L}}{\partial z^2}$$
+```math
+\delta^2= \frac{\partial a^2}{\partial z^2} \frac{\partial v}{\partial a^2} \frac{\partial \mathcal{L}}{\partial v}= \frac{\partial \mathcal{L}}{\partial z^2}
+```
 Second Layer: The gradients are calculated and used in optimization:
-$$\frac{\partial \mathcal{L}}{\partial b^2}=\frac{\partial \mathcal{L}}{\partial z^2}\frac{\partial z^2}{\partial b^2}=  \delta^2$$
-$$\frac{\partial \mathcal{L}}{\partial W^2}= \frac{\partial \mathcal{L}}{\partial z^2}\frac{\partial z^2}{\partial W^2}=  \delta^2(a^{2-1})^\top$$
-$$\Longrightarrow \delta^2= \frac{\partial a^2}{\partial z^2} \cdot \frac{1}{m}\sum_{i=1}^{m}\left(y_i-a^L_i\right) = \begin{bmatrix}\frac{\partial a^2_1}{\partial z^2_1}\end{bmatrix}_{(p\times p)}
+```math
+\frac{\partial \mathcal{L}}{\partial b^2}=\frac{\partial \mathcal{L}}{\partial z^2}\frac{\partial z^2}{\partial b^2}=  \delta^2
+```
+```math
+\frac{\partial \mathcal{L}}{\partial W^2}= \frac{\partial \mathcal{L}}{\partial z^2}\frac{\partial z^2}{\partial W^2}=  \delta^2(a^{2-1})^\top
+```
+```math\Longrightarrow \delta^2= \frac{\partial a^2}{\partial z^2} \cdot \frac{1}{m}\sum_{i=1}^{m}\left(y_i-a^L_i\right) = \begin{bmatrix}\frac{\partial a^2_1}{\partial z^2_1}\end{bmatrix}_{(p\times p)}
 \begin{bmatrix}
 \frac{1}{m}(e_1 + \ldots + e_m)\\
 \end{bmatrix}_{(p\times 1)}= \begin{bmatrix}
 \delta^2_1\\
-\end{bmatrix}_{(p\times 1)}$$
-$$\Longrightarrow \frac{\partial \mathcal{L}}{\partial b^2}=\begin{bmatrix}
+\end{bmatrix}_{(p\times 1)}
+```
+```math
+\Longrightarrow \frac{\partial \mathcal{L}}{\partial b^2}=\begin{bmatrix}
 \delta^2_1\\
-\end{bmatrix} $$
-$$b^2_{new}= b^2_{old}- \eta\frac{\partial \mathcal{L}}{\partial b^2}= \begin{bmatrix}
+\end{bmatrix}
+```
+```math
+b^2_{new}= b^2_{old}- \eta\frac{\partial \mathcal{L}}{\partial b^2}= \begin{bmatrix}
 b^2_1
 \end{bmatrix}- \begin{bmatrix}
 \eta
 \end{bmatrix}
 \begin{bmatrix}
 \delta^{2}_1\\
-\end{bmatrix}$$
-$$\Longrightarrow \frac{\partial \mathcal{L}}{\partial W^2} =\begin{bmatrix}
+\end{bmatrix}
+```
+```math
+\Longrightarrow \frac{\partial \mathcal{L}}{\partial W^2} =\begin{bmatrix}
 \delta^2_1\\
 \end{bmatrix}_{(p\times 1)}
 \begin{bmatrix}
 a^1_1 & a^1_2 & a^1_3
-\end{bmatrix}_{(1\times j)}= \begin{bmatrix} dw_{1,1}^2 & dw_{1,2}^2 & dw_{1,3}^2 \end{bmatrix}_{(p\times j)}$$
-$$W^2_{new} = W^2_{old} - \eta\frac{\partial \mathcal{L}}{\partial W^{2}} =
+\end{bmatrix}_{(1\times j)}= \begin{bmatrix} dw_{1,1}^2 & dw_{1,2}^2 & dw_{1,3}^2 \end{bmatrix}_{(p\times j)}
+```
+```math
+W^2_{new} = W^2_{old} - \eta\frac{\partial \mathcal{L}}{\partial W^{2}} =
 \begin{bmatrix}
 w_{1,1}^2 & w_{1,2}^2 & w_{1,3}^2
 \end{bmatrix} 
@@ -242,12 +266,20 @@ w_{1,1}^2 & w_{1,2}^2 & w_{1,3}^2
 \begin{bmatrix}
 \eta
 \end{bmatrix}
-\begin{bmatrix} dw_{1,1}^2 & dw_{1,2}^2 & dw_{1,3}^2 \end{bmatrix}$$
+\begin{bmatrix} dw_{1,1}^2 & dw_{1,2}^2 & dw_{1,3}^2 \end{bmatrix
+```
 First layer: The gradients are calculated and used in optimization:
-$$\delta^{1}= \frac{\partial a^{1}}{\partial z^{1}}\frac{\partial z^2}{\partial a^{1}}\frac{\partial a^2}{\partial z^2} \frac{\partial v}{\partial a^2} \frac{\partial \mathcal{L}}{\partial v}=\frac{\partial \mathcal{L}}{\partial z^{1}}$$
-$$\frac{\partial \mathcal{L}}{\partial b^{1}}= \frac{\partial \mathcal{L}}{\partial z^{1}}\frac{\partial z^{1}}{\partial b^{1}}=  \delta^{1}$$
-$$\frac{\partial \mathcal{L}}{\partial W^{1}}= \frac{\partial \mathcal{L}}{\partial z^{1}}\frac{\partial z^{1}}{\partial W^{1}}=  \delta^{1}(a^{0})^\top$$
-$$\Longrightarrow \delta^{1}= \frac{\partial a^{1}}{\partial z^{1}}(W^2)^{\top}\delta^{2} = \begin{bmatrix}
+```math
+\delta^{1}= \frac{\partial a^{1}}{\partial z^{1}}\frac{\partial z^2}{\partial a^{1}}\frac{\partial a^2}{\partial z^2} \frac{\partial v}{\partial a^2} \frac{\partial \mathcal{L}}{\partial v}=\frac{\partial \mathcal{L}}{\partial z^{1}}
+```
+```math
+\frac{\partial \mathcal{L}}{\partial b^{1}}= \frac{\partial \mathcal{L}}{\partial z^{1}}\frac{\partial z^{1}}{\partial b^{1}}=  \delta^{1}
+```
+```math
+\frac{\partial \mathcal{L}}{\partial W^{1}}= \frac{\partial \mathcal{L}}{\partial z^{1}}\frac{\partial z^{1}}{\partial W^{1}}=  \delta^{1}(a^{0})^\top
+```
+```math
+\Longrightarrow \delta^{1}= \frac{\partial a^{1}}{\partial z^{1}}(W^2)^{\top}\delta^{2} = \begin{bmatrix}
 \frac{\partial a^1_1}{\partial z^1_1} && 0 &&0 \\
 0 && \frac{\partial a^1_2}{\partial z^1_2} && 0\\
 0 && 0  && \frac{\partial a^1_3}{\partial z^1_3}
@@ -263,13 +295,17 @@ w_{1,3}^2
 \delta^{1}_1\\
 \delta^{1}_2\\
 \delta^{1}_3
-\end{bmatrix}_{(j\times 1)}$$
-$$\Longrightarrow \frac{\partial \mathcal{L}}{\partial b^{1}} = \begin{bmatrix}
+\end{bmatrix}_{(j\times 1)}
+```
+```math
+\Longrightarrow \frac{\partial \mathcal{L}}{\partial b^{1}} = \begin{bmatrix}
 \delta^{1}_1\\
 \delta^{1}_2\\
 \delta^{1}_3
-\end{bmatrix}$$
-$$b^1_{new}= b^1_{old}- \eta\frac{\partial \mathcal{L}}{\partial b^1}= \begin{bmatrix}
+\end{bmatrix}
+```
+```math
+b^1_{new}= b^1_{old}- \eta\frac{\partial \mathcal{L}}{\partial b^1}= \begin{bmatrix}
 b^1_1\\
 b^1_2\\
 b^1_3
@@ -282,8 +318,10 @@ b^1_3
 \delta^{1}_1\\
 \delta^{1}_2\\
 \delta^{1}_3
-\end{bmatrix}$$
-$$\Longrightarrow \frac{\partial \mathcal{L}}{\partial W^{1}} = \begin{bmatrix}
+\end{bmatrix}
+```
+```math
+\Longrightarrow \frac{\partial \mathcal{L}}{\partial W^{1}} = \begin{bmatrix}
 \delta^{1}_1\\
 \delta^{1}_2\\
 \delta^{1}_3
@@ -293,8 +331,10 @@ x_1 & x_2
 dw_{1,1}^1 & dw_{1,2}^1\\
 dw_{2,1}^1 & dw_{2,2}^1\\
 dw_{3,1}^1 & dw_{3,2}^1
-\end{bmatrix}_{(j\times k)}$$
-$$W^1_{new} = W^1_{old} - \eta\frac{\partial \mathcal{L}}{\partial W^{1}} =
+\end{bmatrix}_{(j\times k)}
+```
+```math
+W^1_{new} = W^1_{old} - \eta\frac{\partial \mathcal{L}}{\partial W^{1}} =
 \begin{bmatrix}
 w_{1,1}^1 & w_{1,2}^1\\
 w_{2,1}^1 & w_{2,2}^1\\
@@ -310,6 +350,7 @@ w_{3,1}^1 & w_{3,2}^1
 dw_{1,1}^1 & dw_{1,2}^1\\
 dw_{2,1}^1 & dw_{2,2}^1\\
 dw_{3,1}^1 & dw_{3,2}^1
-\end{bmatrix}$$
+\end{bmatrix}
+```
 Note that $\delta^2$ is naturally derived as part of the calculation for $\delta^1$, illustrating how each error term is interconnected through the input of the previous layer, akin to a nested function. This is why the algorithm is often given the misnomer of chain rule.\
 If the same pattern of indices continue, one can also assume that the order of multiplication is also invariant to depth.
