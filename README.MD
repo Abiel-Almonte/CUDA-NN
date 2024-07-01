@@ -95,18 +95,21 @@ For simplcity, consider the following neural network:
 The input, hidden, and output layers will have their size represented as $k,j,p$ respectively to ensure that the order matrix multiplication here is invariant to the architecture's width.
 
 The input layer is composed of the two blue nodes
-$$x= \begin{bmatrix}x_1\\ x_2\\ \end{bmatrix}_{(k\times 1)}$$
+$$x=\begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_{(k\times 1)}$$
+
 The weights and baisis have the following noation:
 -   $w^l_{j,k}$ where, $l$ represents the layer, $k$ reprsents the posterior neuron connection, $j$ represents the anterior neuron connection.  Each line corresponds to a single weight.
 -   $b^l_j$ where $l$ is also the layer and $j$ is the neuron in the anterior layer.
 
 Each linear layer has a weight matrix $W$ and bias vector $b$, for example the first layer has the following form:
-$$
-W^1= \begin{bmatrix}
+$$W^1= \begin{bmatrix}
 w_{1,1}^1 & w_{1,2}^1\\
 w_{2,1}^1 & w_{2,2}^1\\
 w_{3,1}^1 & w_{3,2}^1
-\end{bmatrix}_{(j\times k)}, \;\; b^l=  \begin{bmatrix}
+\end{bmatrix}_{(j\times k)}, b^l=  \begin{bmatrix}
 b^1_1\\
 b^1_2\\
 b^1_3
