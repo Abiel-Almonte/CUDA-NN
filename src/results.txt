@@ -1,0 +1,14 @@
+0 | Loss: 0.608012
+100 | Loss: 0.0588279
+200 | Loss: 0.0324606
+300 | Loss: 0.0219459
+400 | Loss: 0.0164508
+500 | Loss: 0.0131106
+600 | Loss: 0.0108775
+700 | Loss: 0.00928398
+800 | Loss: 0.0080919
+900 | Loss: 0.00716761
+1000 | Loss: 0.0064306
+1100 | Loss: 0.00582955
+1200 | Loss: 0.00533024
+256/256 testing examples predicted correctly at a threshold of 0.5
