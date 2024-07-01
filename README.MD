@@ -79,7 +79,7 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 - $\hat{y} \in \mathbb{R}$
 ### Loss function:
 - Binary Cross-Entropy (BCE):
-  - $\mathcal{L}= \frac{1}{m}\sum_{i=1}^{m}\left(y_i \log(\hat{y}_i) + (1-y_i) + \log(1-\hat{y}_i)\right)$
+  - $\mathcal{L}= \frac{1}{m}\sum^m_{i=1}\left(y_i \log(\hat{y}_i) + (1-y_i) + \log(1-\hat{y}_i)\right)$
 > **__NOTE__** $a^0= x, a^L= \hat{y}$
 ## Forward Propagation
 ### Recursive General Form
@@ -96,10 +96,12 @@ For simplcity, consider the following neural network:
 The input, hidden, and output layers will have their size represented as $k,j,p$ respectively to ensure that the order matrix multiplication here is invariant to the architecture's width.
 
 The input layer is composed of the two blue nodes
-$$x = \begin{bmatrix}
-x_1\\\
-x_2\\\
-\end{bmatrix}_{(k \times 1)}$$
+```math 
+x = \begin{bmatrix}
+x_1\\
+x_2\\
+\end{bmatrix}_{(k \times 1)}
+```
 
 The weights and baisis have the following noation:
 -   $w^l_{j,k}$ where, $l$ represents the layer, $k$ reprsents the posterior neuron connection, $j$ represents the anterior neuron connection.  Each line corresponds to a single weight.
@@ -352,5 +354,4 @@ dw_{2,1}^1 & dw_{2,2}^1\\
 dw_{3,1}^1 & dw_{3,2}^1
 \end{bmatrix}
 ```
-Note that $\delta^2$ is naturally derived as part of the calculation for $\delta^1$, illustrating how each error term is interconnected through the input of the previous layer, akin to a nested function. This is why the algorithm is often given the misnomer of chain rule.\
-If the same pattern of indices continue, one can also assume that the order of multiplication is also invariant to depth.
+Note that $\delta^2$ is naturally derived as part of the calculation for $\delta^1$, illustrating how each error term is interconnected through the input of the previous layer, akin to a nested function. This is why the algorithm is often given the misnomer of chain rule. If the same pattern of indices continue, one can also assume that the order of multiplication is also invariant to depth.
