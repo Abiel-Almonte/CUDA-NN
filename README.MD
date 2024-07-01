@@ -70,7 +70,7 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 ### $L$ Hidden-layers:
 - Linear Neurons:
     - $z^l =  W^{l}a^{l-1} + b^l$\
-    where, $W^l \in \mathbb{R}^{j \times k}$, $ a^{l-1} \in \mathbb{R}^k$, $ b^l, z^l \in \mathbb{R}^j$
+    where, $W^l \in \mathbb{R}^{j \times k}$, $a^{l-1} \in \mathbb{R}^k$, $b^l, z^l \in \mathbb{R}^j$
 - Rectified Linear-Unit (ReLU) Activation Function:
     - $a^l= \max{\left(0, z^l\right)}$
 - Sigmoid Activation Function:
