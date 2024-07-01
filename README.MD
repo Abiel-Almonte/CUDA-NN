@@ -99,7 +99,7 @@ The input layer is composed of the two blue nodes
 ```math
 x = \begin{bmatrix}
 x_1\\
-x_2\\
+x_2
 \end{bmatrix}_{(k \times 1)}
 ```
 
