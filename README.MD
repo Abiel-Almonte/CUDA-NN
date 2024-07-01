@@ -7,10 +7,10 @@ CUDA, characterized by its high throughput and high latency, is an effective pro
 The following is an example of the kernel preforming tiled matrix multiplication in the linear layer (```src/layers/linear_layer.cu```).
 ```cpp
 __global__ void linearLayerComputeOutput(const float* __restrict__ W,
-const float* __restrict__ A,
-const float* __restrict__ b, 
-float* __restrict__ Z, int W_x, 
-int W_y, int A_x, int A_y){
+						const float* __restrict__ A,
+						const float* __restrict__ b, 
+						float* __restrict__ Z, int W_x, 
+						int W_y, int A_x, int A_y){
 
 	__shared__ float tileW[16][16];
 	__shared__ float tileA[16][16];
