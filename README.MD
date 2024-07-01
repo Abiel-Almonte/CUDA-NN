@@ -108,7 +108,8 @@ The weights and baisis have the following noation:
 -   $b^l_j$ where $l$ is also the layer and $j$ is the neuron in the anterior layer.
 
 Each linear layer has a weight matrix $W$ and bias vector $b$, for example the first layer has the following form:
-$$W^1= \begin{bmatrix}
+```math
+W^1= \begin{bmatrix}
 w_{1,1}^1 & w_{1,2}^1\\
 w_{2,1}^1 & w_{2,2}^1\\
 w_{3,1}^1 & w_{3,2}^1
@@ -116,10 +117,12 @@ w_{3,1}^1 & w_{3,2}^1
 b^1_1\\
 b^1_2\\
 b^1_3
-\end{bmatrix}_{(j\times 1)}$$
+\end{bmatrix}_{(j\times 1)}
+```
 
 The inputs are then pass through the first layer. Recall $a^l= \max\left(0,z^l:= W^{l}a^{l-1} + b^l \right)$.
-$$z^1= \begin{bmatrix}
+```math
+z^1= \begin{bmatrix}
 w_{1,1}^1 & w_{1,2}^1\\
 w_{2,1}^1 & w_{2,2}^1\\
 w_{3,1}^1 & w_{3,2}^1
@@ -132,8 +135,10 @@ x_2\\
 b^1_1\\
 b^1_2\\
 b^1_3
-\end{bmatrix}$$
-$$a^1= \begin{bmatrix}
+\end{bmatrix}
+```
+```math
+a^1= \begin{bmatrix}
 \max(0, w_{1,1}^1x_1+ w_{1,2}^1x_2 + b^1_1)\\
 \max(0, w_{2,1}^1x_1+ w_{2,2}^1x_2 + b^1_2)\\
 \max(0, w_{3,1}^1x_1+ w_{3,2}^1x_2 + b^1_3)
@@ -145,9 +150,11 @@ $$a^1= \begin{bmatrix}
 a^1_1\\
 a^1_2\\
 a^1_3
-\end{bmatrix}_{(j\times 1)}$$ 
+\end{bmatrix}_{(j\times 1)}
+```
 The output of the first layer has the following Jacobain:
-$$\Rightarrow \frac{\partial a^1}{\partial z^1} = \begin{bmatrix}
+```math
+\Rightarrow \frac{\partial a^1}{\partial z^1} = \begin{bmatrix}
 \frac{\partial a^1_1}{\partial z^1_1} && \frac{\partial a^1_1}{\partial z^1_2} && \frac{\partial a^1_3}{\partial z^1_3}\\
 \frac{\partial a^1_2}{\partial z^1_1} && \frac{\partial a^1_2}{\partial z^1_2} && \frac{\partial a^1_3}{\partial z^1_3}\\
 \frac{\partial a^1_3}{\partial z^1_1} && \frac{\partial a^1_3}{\partial z^1_2} && \frac{\partial a^1_3}{\partial z^1_3}
@@ -167,12 +174,16 @@ a^1_3
 \end{bmatrix}
 + \begin{bmatrix}
 b^2_1\\
-\end{bmatrix}_{(p\times 1)}$$
-$$ a^2= \begin{bmatrix}
+\end{bmatrix}_{(p\times 1)}
+```
+```math a^2= \begin{bmatrix}
 \sigma\left(0, w^2_{1,1}a^1_1+ w^2_{1,2}a^1_2+ w^2_{1,3}a^1_3 + b^2_1\right)
-\end{bmatrix}= \begin{bmatrix}\sigma(0, z^2_1)\end{bmatrix}=\begin{bmatrix}a^2_1\end{bmatrix}_{(p\times 1)}$$
+\end{bmatrix}= \begin{bmatrix}\sigma(0, z^2_1)\end{bmatrix}=\begin{bmatrix}a^2_1\end{bmatrix}_{(p\times 1)}
+```
 Jacobian for the output of the second layer:
-$$\Rightarrow \frac{\partial a^1}{\partial z^1} = \begin{bmatrix}\frac{\partial a^2_1}{\partial z^2_1}\end{bmatrix}_{(p\times p)}$$
+```math
+\Rightarrow \frac{\partial a^1}{\partial z^1} = \begin{bmatrix}\frac{\partial a^2_1}{\partial z^2_1}\end{bmatrix}_{(p\times p)}
+```
 >**__NOTE__** The Jacobians were calculated here to conserve space in the next section. In fact they are computed during back-propagation.
 ## Back Propagation
 ### Recursive General Form
