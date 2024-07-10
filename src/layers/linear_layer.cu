@@ -2,31 +2,33 @@
 #include <random>
 #include <assert.h>
 
-__global__ void linearLayerComputeOutput(const float* __restrict__ W, const float* __restrict__ A, float* __restrict__ Z, const float* __restrict__ b,int W_x, int W_y, int A_x, int A_y){
-	__shared__ float tileW[16][16];
-	__shared__ float tileA[16][16];
+#define BLOCKDIM 16
 
-	const int row= blockIdx.y * blockDim.y + threadIdx.y;
-	const int col= blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void linearLayerComputeOutput(const float* __restrict__ W, const float* __restrict__ A, float* __restrict__ Z, const float* __restrict__ b,int W_x, int W_y, int A_x, int A_y){
+	__shared__ float tileW[BLOCKDIM][BLOCKDIM];
+	__shared__ float tileA[BLOCKDIM][BLOCKDIM];
 
 	const int tx = threadIdx.x;
 	const int ty = threadIdx.y;
+
+	const int col= blockIdx.x * BLOCKDIM + tx;
+	const int row= blockIdx.y * BLOCKDIM + ty;
 
 	const int Z_x= A_x;
 	const int Z_y= W_y;
 
 	float element_value= 0.0f;
 
-	for (int i= 0; i < ((W_x + blockDim.x -1) / blockDim.x); i++) {
-		if (tx + i*blockDim.x < W_x && row < W_y){
-			tileW[ty][tx] = W[row*W_x + i*blockDim.x + tx];
+	for (int i= 0; i < ((W_x + BLOCKDIM -1) / BLOCKDIM); ++i) {
+		if (tx + i*BLOCKDIM < W_x && row < W_y){
+			tileW[ty][tx] = W[row*W_x + i*BLOCKDIM + tx];
 		}
 		else{
 			tileW[ty][tx]= 0.0f;
 		}
 
-		if (ty + i*blockDim.x < A_y && col < A_x){
-			tileA[ty][tx] = A[(ty + i * blockDim.x) * A_x + col];
+		if (ty + i*BLOCKDIM < A_y && col < A_x){
+			tileA[ty][tx] = A[(ty + i *BLOCKDIM) * A_x + col];
 		}
 		else{
 			tileA[ty][tx]= 0.0f;
@@ -35,7 +37,7 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 		__syncthreads();
 
 		#pragma unroll
-		for (int k = 0; k < blockDim.x; k++) {
+		for (int k = 0; k < BLOCKDIM; k++) {
 			element_value += tileW[ty][k] * tileA[k][tx];
 		}
 
