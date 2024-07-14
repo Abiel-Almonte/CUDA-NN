@@ -74,6 +74,7 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W,
 | 100       | 0.0588279   |
 | 600       | 0.0108775   |
 | 1200      | 0.00533024  |
+
 **Note:** 256/256 testing examples predicted correctly at a threshold of 0.5
 
 
