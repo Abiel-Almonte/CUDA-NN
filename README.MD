@@ -67,6 +67,16 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W,
 
 >**__NOTE__** There is still a lot of room for improvement in all kernels and under construction. For more information on the above kernel refer to the CUDA programming guide [here](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#shared-memory-in-matrix-multiplication-c-ab__improvement-reading-additional-data-shared-memory).
 
+## Results
+| Epoch | Loss        |
+|-----------|-------------|
+| 0         | 0.608012    |
+| 100       | 0.0588279   |
+| 600       | 0.0108775   |
+| 1200      | 0.00533024  |
+**Note:** 256/256 testing examples predicted correctly at a threshold of 0.5
+
+
 ## Architecture
 ### Input-layer: 
 - $x \in \mathbb{R}^2$
