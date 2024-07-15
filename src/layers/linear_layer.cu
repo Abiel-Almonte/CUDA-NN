@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #define BLOCKDIM 16
+#define FULL_MASK 0xffffffff
 
 __global__ void linearLayerComputeOutput(const float* __restrict__ W, const float* __restrict__ A, float* __restrict__ Z, const float* __restrict__ b,int W_x, int W_y, int A_x, int A_y){
 	__shared__ float tileW[BLOCKDIM][BLOCKDIM];
@@ -50,11 +51,11 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W, const floa
 }
 
 __global__ void linearLayerComputeError(const float* __restrict__ W, const float* __restrict__ aErr, float* __restrict__ Err, int W_x, int W_y, int aErr_x, int aErr_y){
-	__shared__ float tileW[16][16];
-	__shared__ float tileaErr[16][16];
+	__shared__ float tileW[BLOCKDIM][BLOCKDIM];
+	__shared__ float tileaErr[BLOCKDIM][BLOCKDIM];
 
-	const int col= blockIdx.x * blockDim.x + threadIdx.x;
-	const int row= blockIdx.y * blockDim.y + threadIdx.y;
+	const int col= blockIdx.x * BLOCKDIM + threadIdx.x;
+	const int row= blockIdx.y * BLOCKDIM + threadIdx.y;
 
 	const int tx= threadIdx.x;
 	const int ty= threadIdx.y;
@@ -64,17 +65,17 @@ __global__ void linearLayerComputeError(const float* __restrict__ W, const float
 
 	float element_value= 0.0f;
 
-	for (int i= 0; i < ((W_y + blockDim.x -1)/ blockDim.x) ; i++) {
+	for (int i= 0; i < ((W_y + BLOCKDIM -1)/ BLOCKDIM) ; i++) {
 
-		if(tx + i*blockDim.x < W_y && row < W_x){
-			tileW[ty][tx]= W[(tx + i*blockDim.x) * W_x + row];
+		if(tx + i*BLOCKDIM< W_y && row < W_x){
+			tileW[ty][tx]= W[(tx + i*BLOCKDIM) * W_x + row];
 		}
 		else{
 			tileW[ty][tx]= 0.0f;
 		}
 
-		if(ty + i*blockDim.x < aErr_y && col < aErr_x){
-			tileaErr[ty][tx]= aErr[(ty + i*blockDim.x) * aErr_x + col];
+		if(ty + i*BLOCKDIM < aErr_y && col < aErr_x){
+			tileaErr[ty][tx]= aErr[(ty + i*BLOCKDIM) * aErr_x + col];
 		}
 		else{
 			tileW[ty][tx]= 0.0f;
@@ -84,7 +85,7 @@ __global__ void linearLayerComputeError(const float* __restrict__ W, const float
 		__syncthreads();
 
 		#pragma unroll
-		for(int k = 0; k < blockDim.x; k ++){
+		for(int k = 0; k < BLOCKDIM; k ++){
 			element_value += tileW[k][ty] * tileaErr[k][tx];
 		}
 
@@ -96,29 +97,83 @@ __global__ void linearLayerComputeError(const float* __restrict__ W, const float
 	}
 }
 
-__global__ void linearLayerUpdateWeights(float* aErr, float* A, float* W, int aErr_x, int aErr_y, int A_x, int A_y, float learning_rate){
+__inline__ __device__ float warpReduceSum(float val){
+	unsigned mask= __activemask();
+	for (int offset= BLOCKDIM;  offset>0; offset/=2){
+		val += __shfl_down_sync(mask, val, offset);
+	}
+	return val;
+}
 
-	int col = blockIdx.x * blockDim.x + threadIdx.x;
-	int row = blockIdx.y * blockDim.y + threadIdx.y;
+__global__ void linearLayerUpdateWeights(const float* __restrict__ aErr, const float* __restrict__ A, float* __restrict__ W, int aErr_x, int aErr_y, int A_x, int A_y, const float learning_rate){
+	__shared__ float tileA[BLOCKDIM][BLOCKDIM];
+	__shared__ float tileaErr[BLOCKDIM][BLOCKDIM];
 
-	int W_x= A_y;
-	int W_y= aErr_y;
+	const int tx= threadIdx.x;
+	const int ty= threadIdx.y; 
+
+	const int col= blockIdx.x *BLOCKDIM +tx;
+	const int row= blockIdx.y * BLOCKDIM + ty;
+
+	const int W_x= A_y;
+	const int W_y= aErr_y;
 
 	float element_value= 0.0f;
 
-	if (row < W_y && col < W_x) {
-		for (int i= 0; i < aErr_x; i++) {
-			element_value += aErr[row * aErr_x + i] * A[col * A_x + i];
+	for(int i =0; i < (aErr_x+ BLOCKDIM -1)/ BLOCKDIM; i++){
+		if(tx + i*BLOCKDIM < aErr_x && row < aErr_y){
+			tileaErr[ty][tx]= aErr[row*aErr_x + tx + i*BLOCKDIM];
 		}
-		atomicAdd(&W[row * W_x + col], -learning_rate * element_value);
+		else{
+			tileaErr[ty][tx]= 0.0f;
+		}
+		if(ty + i*BLOCKDIM < A_x &&  col < A_y){
+			tileA[ty][tx]= A[col * A_x + i * BLOCKDIM + ty];
+		}
+		else{
+			tileA[ty][tx]= 0.0f;
+		}
+
+		__syncthreads();
+
+		#pragma unroll
+		for(int k = 0; k < BLOCKDIM; k ++){
+			element_value += tileaErr[ty][k] * tileA[k][tx];
+		}
+
+		__syncthreads();
+	}
+
+	if (row < W_y && col < W_x) {
+        atomicAdd(&W[row * W_x + col], -learning_rate * element_value);
 	}
 }
 
-__global__ void linearLayerUpdateBias(float* aErr, float* b, int aErr_x, int aErr_y,int b_x, float learning_rate){
-	int i = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void linearLayerUpdateBias(const float* __restrict__ aErr, float* __restrict__ b, int aErr_x, int aErr_y,int b_x, const float learning_rate){
+	__shared__ float data[8];
 
-	if (i < aErr_x * aErr_y) {
-		atomicAdd(&b[i], -learning_rate * aErr[i]);
+	const int tx= threadIdx.x;
+	const int bx= blockIdx.x;
+	const int idx= bx * BLOCKDIM+ tx;
+
+	const int lane= tx % 32;
+	const int wid= tx / 32;
+
+	float sum= 0.0f;
+
+	for (int i= idx; i < aErr_x * aErr_y; i += gridDim.x *blockDim.x) sum += aErr[i];
+
+	sum= warpReduceSum(sum);
+
+	if(lane==0) data[wid]= sum;
+
+	__syncthreads();
+
+	if(tx< 8){
+		sum= data[tx];
+		sum= warpReduceSum(sum);
+
+		if(lane==0) atomicAdd(&b[bx], -learning_rate * sum);
 	}
 }
 
@@ -166,8 +221,8 @@ Matrix& LinearLayer::forward(Matrix& A){
 }
 
 void LinearLayer::computeOutput(Matrix& A){
-	dim3 block_size(16, 16);
-	dim3 grid_size((Z.shape.x + block_size.x - 1) / block_size.x, (Z.shape.y + block_size.y - 1) / block_size.y);
+	dim3 block_size(BLOCKDIM, BLOCKDIM);
+	dim3 grid_size((Z.shape.x + BLOCKDIM- 1) / BLOCKDIM, (Z.shape.y + BLOCKDIM - 1) / BLOCKDIM);
 	linearLayerComputeOutput<<<grid_size, block_size>>>( W.device_data.get(), A.device_data.get(),Z.device_data.get(), b.device_data.get(), W.shape.x, W.shape.y, A.shape.x, A.shape.y);
 
 	cudaError_t err = cudaGetLastError();
@@ -189,8 +244,8 @@ Matrix& LinearLayer::backward(Matrix& aErr){
 }
 
 void LinearLayer::computeError(Matrix& aErr) {
-	dim3 block_size(16, 16);
-	dim3 grid_size((A.shape.x + block_size.x - 1) / block_size.x, (A.shape.y + block_size.y - 1) / block_size.y);
+	dim3 block_size(BLOCKDIM, BLOCKDIM);
+	dim3 grid_size((A.shape.x + BLOCKDIM - 1) / BLOCKDIM, (A.shape.y + BLOCKDIM - 1) / BLOCKDIM);
 	linearLayerComputeError<<<grid_size, block_size>>>( W.device_data.get(), aErr.device_data.get(), Err.device_data.get(), W.shape.x, W.shape.y, aErr.shape.x, aErr.shape.y);
 
 	cudaError_t err = cudaGetLastError();
@@ -202,7 +257,7 @@ void LinearLayer::computeError(Matrix& aErr) {
 
 void LinearLayer::updateWeights(Matrix& aErr) {
 	dim3 block_size(16, 16);
-	dim3 grid_size((W.shape.x + block_size.x - 1) / block_size.x, (W.shape.y + block_size.y - 1) / block_size.y);
+	dim3 grid_size((W.shape.x + BLOCKDIM - 1) / BLOCKDIM , (W.shape.y + BLOCKDIM - 1) / BLOCKDIM);
 	linearLayerUpdateWeights<<<grid_size, block_size>>>(aErr.device_data.get(), A.device_data.get(), W.device_data.get(), aErr.shape.x, aErr.shape.y, A.shape.x, A.shape.y, learning_rate);
 	
 	cudaError_t err = cudaGetLastError();
@@ -214,7 +269,7 @@ void LinearLayer::updateWeights(Matrix& aErr) {
 
 void LinearLayer::updateBias(Matrix& aErr) {
 	dim3 block_size(256);
-	dim3 grid_size((aErr.shape.y * aErr.shape.x + block_size.x - 1) / block_size.x);
+	dim3 grid_size((aErr.shape.y * aErr.shape.x + BLOCKDIM- 1) / BLOCKDIM);
 	linearLayerUpdateBias<<<grid_size, block_size>>>(aErr.device_data.get(), b.device_data.get(), aErr.shape.x, aErr.shape.y, b.shape.x, learning_rate);
 
 	cudaError_t err = cudaGetLastError();
