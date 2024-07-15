@@ -98,8 +98,9 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W,
 ## Forward Propagation
 ### Recursive General Form
 $\text{For } l=1,\ldots,L$
-$$a^l= \max\left(0,z^l:= W^{l}a^{l-1} + b^l \right)$$
-
+```math 
+a^l= \max\left(0,z^l:= W^{l}a^{l-1} + b^l \right)
+```
 ### Example
 For simplicity, consider the following neural network:
 
@@ -206,7 +207,9 @@ Jacobian for the output of the second layer:
 ### Recursive General Form
 Back propagation is used to recursively calculate the gradient of the loss function with respect to the weights and biases by moving backward through the network. This process involves passing the error term $\delta^l$ from one layer to the previous layer, using the input $a^l$, until the gradients reach the initial layer. These gradients are necessary for updating the network's parameters and enabling learning.\
 $\text{For } l=L,\ldots,1$
-$$\delta^{l-1}= \frac{\partial a^{l-1}}{\partial z^{l-1}}(W^l)^{\top}\delta^{l}$$
+```math 
+\delta^{l-1}= \frac{\partial a^{l-1}}{\partial z^{l-1}}(W^l)^{\top}\delta^{l}
+```
 $\text{Where: } \delta^L= \frac{\partial a^L}{\partial z^L}\frac{\partial \mathcal{L}}{\partial a^L}$
 #### Basic Gradient Descent Optimization:
 ```math
