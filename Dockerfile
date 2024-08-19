@@ -1,10 +1,10 @@
 FROM nvidia/cuda:12.3.2-devel-ubuntu22.04
 
 
-ENV USER abiel
-ENV PASS dummypassword123
-ENV UID 1000
-ENV GID 1000
+ENV USER=abiel
+ENV PASS=dummypassword123
+ENV UID=1000
+ENV GID=1000
 
 RUN apt-get update && apt-get install -y sudo vim
 
