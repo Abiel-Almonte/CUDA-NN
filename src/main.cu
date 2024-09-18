@@ -4,8 +4,6 @@
 #include "./layers/relu_layer.hh"
 #include "./layers/sigmoid_layer.hh"
 
-float computeAccuracy(const Matrix& predictions, const Matrix& targets);
-
 int main() {
 
 	Dataset dataset(256, 50);
