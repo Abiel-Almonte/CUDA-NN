@@ -11,16 +11,26 @@ This document details the architecture, forward propagation, and back propagatio
   <img src="./media/epochs_comparison.png" />
 </p>
 
+### Default Configuration
+The following default settings were applied during the experiments. In each image only one setting varied while the rest remained constant.
+- Steps: 400
+- Epochs: 100
+- Batch Size: 64
+
+### Comparison
+The performance of the CUDA implementation versus PyTorch v2.4.1 was measured on a model with 2 layers and 50 neurons per layer, using a 4070 Ti Super GPU. The CUDA implementation achieved a maximum reduction in training time of 46.23%.
 My CUDA implementation vs. PyTorch v2.4.1. Measured on a depth of 2 layers and a width of 50 neurons on the 4070 Ti Super. Achieving a maximum reduction in training time of 46.23%.
 
-| Epoch | Loss        |
-|-----------|-------------|
-| 0         | 0.608012    |
-| 100       | 0.0588279   |
-| 600       | 0.0108775   |
-| 1200      | 0.00533024  |
+### Training Logs with Default Configuration
 
-**Note:** 256/256 testing examples predicted correctly at a threshold of 0.5
+| Epoch | Loss        |
+|-------|-------------|
+| 0     | 0.608012    |
+| 100   | 0.0588279   |
+| 600   | 0.0108775   |
+| 1200  | 0.00533024  |
+
+The model achieved 100% accuracy on a test set of 256 examples
 
 ## CUDA Programming
 CUDA, characterized by its high throughput and high latency, is an effective programming platform for performing large matrix multiplication via techniques like memory coalescing and tiled dot product, speeding up computations and reducing memory consumption.
