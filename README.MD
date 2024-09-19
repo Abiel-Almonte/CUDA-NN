@@ -1,6 +1,27 @@
 # CUDA Neural Network (C++) 
 ## Overview
 This document details the architecture, forward propagation, and back propagation of a basic Multilayer Perceptron (MLP) that is implemented in CUDA programming to solve the XOR problem.
+## Performance
+
+<p align="center">
+  <img src="./media/steps_comparison.png" />
+</p>
+
+<p align="center">
+  <img src="./media/epochs_comparison.png" />
+</p>
+
+My CUDA implementation vs. PyTorch v2.4.1. Measured on a depth of 2 layers and a width of 50 neurons on the 4070 Ti Super. Achieving a maximum reduction in training time of 46.23%.
+
+| Epoch | Loss        |
+|-----------|-------------|
+| 0         | 0.608012    |
+| 100       | 0.0588279   |
+| 600       | 0.0108775   |
+| 1200      | 0.00533024  |
+
+**Note:** 256/256 testing examples predicted correctly at a threshold of 0.5
+
 ## CUDA Programming
 CUDA, characterized by its high throughput and high latency, is an effective programming platform for performing large matrix multiplication via techniques like memory coalescing and tiled dot product, speeding up computations and reducing memory consumption.
 
@@ -59,23 +80,11 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W,
 
 ### Key terms:
 - ```__global__```: Marks a function that runs on the GPU and is called from the CPU. CPU allocates and deallocates Data in GPU's "global" memory.
-
 - ```__shared__```: Declares memory that is shared among threads in the same block on the GPU.
 - ```__syncthreads```:  Acts as a barrier synchronization, causing threads in a block to wait until all have reached this point.
 - ```__restrict__```: Informs the compiler that a pointer does not alias other pointers, potentially improving performance. 
-- ```#param unroll```: Directs the compiler to unroll loops, potentially improving performance by converting loops into separate instructions.
 
 >**__NOTE__** There is still a lot of room for improvement in all kernels and under construction. For more information on the above kernel refer to the CUDA programming guide [here](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#shared-memory-in-matrix-multiplication-c-ab__improvement-reading-additional-data-shared-memory).
-
-## Results
-| Epoch | Loss        |
-|-----------|-------------|
-| 0         | 0.608012    |
-| 100       | 0.0588279   |
-| 600       | 0.0108775   |
-| 1200      | 0.00533024  |
-
-**Note:** 256/256 testing examples predicted correctly at a threshold of 0.5
 
 
 ## Architecture
