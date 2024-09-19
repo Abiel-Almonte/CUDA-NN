@@ -26,7 +26,7 @@ Dataset::Dataset(size_t batch_size, size_t number_of_batches) :
 
 
 float Dataset::random_binary(){
-	static default_random_engine randGen(random_device{}()); 
+	static default_random_engine randGen(42); 
 	static uniform_int_distribution<int>  uniform_dist(0, 1);
 	return static_cast<float>(uniform_dist(randGen));
 }
