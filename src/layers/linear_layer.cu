@@ -2,7 +2,7 @@
 #include <random>
 #include <assert.h>
 
-#define BLOCKDIM 16
+#define BLOCKDIM 32
 #define FULL_MASK 0xffffffff
 
 __global__ void linearLayerComputeOutput(const float* __restrict__ W, const float* __restrict__ A, float* __restrict__ Z, const float* __restrict__ b,int W_x, int W_y, int A_x, int A_y){
