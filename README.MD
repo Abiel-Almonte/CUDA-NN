@@ -1,6 +1,6 @@
 # CUDA Neural Network (C++) 
 ## Overview
-This document details the architecture, forward propagation, and back propagation of a basic Multilayer Perceptron (MLP) that is implemented in CUDA programming to solve the XOR problem.
+This document details the preformance, architecture, and the theoretical mathematics of the forward and back propagation of a basic Multilayer Perceptron (MLP) that is implemented in C++ using CUDA to solve the XOR problem.
 ## Performance
 
 <p align="center">
@@ -21,7 +21,7 @@ The following default settings were applied during the experiments. In each imag
 The performance of the CUDA implementation versus PyTorch v2.4.1 was measured on a model with 2 layers and 50 neurons per layer, using a 4070 Ti Super GPU. The CUDA implementation achieved a maximum reduction in training time of 46.23%.
 My CUDA implementation vs. PyTorch v2.4.1. Measured on a depth of 2 layers and a width of 50 neurons on the 4070 Ti Super. Achieving a maximum reduction in training time of 46.23%.
 
-### Training Logs with Default Configuration
+### Training Log
 
 | Epoch | Loss        |
 |-------|-------------|
@@ -30,7 +30,10 @@ My CUDA implementation vs. PyTorch v2.4.1. Measured on a depth of 2 layers and a
 | 600   | 0.0108775   |
 | 1200  | 0.00533024  |
 
-The model achieved 100% accuracy on a test set of 256 examples
+The CUDA model with the following configuration achieved 100% accuracy on a test set of 256 examples.
+- Steps: 50
+- Epochs: 1200
+- Batch Size: 256
 
 ## CUDA Programming
 CUDA, characterized by its high throughput and high latency, is an effective programming platform for performing large matrix multiplication via techniques like memory coalescing and tiled dot product, speeding up computations and reducing memory consumption.
@@ -92,8 +95,6 @@ __global__ void linearLayerComputeOutput(const float* __restrict__ W,
 - ```__global__```: Marks a function that runs on the GPU and is called from the CPU. CPU allocates and deallocates Data in GPU's "global" memory.
 - ```__shared__```: Declares memory that is shared among threads in the same block on the GPU.
 - ```__syncthreads```:  Acts as a barrier synchronization, causing threads in a block to wait until all have reached this point.
-- ```__restrict__```: Informs the compiler that a pointer does not alias other pointers, potentially improving performance. 
-
 >**__NOTE__** There is still a lot of room for improvement in all kernels and under construction. For more information on the above kernel refer to the CUDA programming guide [here](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#shared-memory-in-matrix-multiplication-c-ab__improvement-reading-additional-data-shared-memory).
 
 
